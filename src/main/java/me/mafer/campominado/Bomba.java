@@ -16,8 +16,18 @@ public class Bomba extends Casa {
     }
     
     @Override
-    public void handleRightClick() {
+    public void abrir() {
         this.setBackground(Color.red);
         this.setText("B");
+    }
+    
+    @Override
+    public void handleRightClick() {
+        if (!this.getCampoMinado().isJogando()) {
+                return;
+        } else {
+            this.getCampoMinado().abrirRecursivo(this);
+        }
+        
     }
 }

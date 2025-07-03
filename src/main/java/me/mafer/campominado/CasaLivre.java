@@ -25,8 +25,6 @@ public class CasaLivre extends Casa {
         int colunas = this.getCampoMinado().getColunas();
         int linhaCasa = posicao / colunas;
         int colunaCasa = posicao % colunas;
-        System.out.println("LINHA KK = " + linhaCasa);
-        System.out.println("COLUNA KK = " + colunaCasa);
         int inicioColuna = colunaCasa - 1;
         int fimColuna = colunaCasa + 1;
 
@@ -49,7 +47,6 @@ public class CasaLivre extends Casa {
         for (int linha = inicioLinha; linha <= fimLinha; linha++) {
             for (int coluna = inicioColuna; coluna <= fimColuna; coluna++) {
                 int casaAdj = (colunas*linha) + coluna;
-                System.out.println(casaAdj);
                 casasAdjacentes.add(this.getCampoMinado().getCasa(casaAdj));
             }
         }
@@ -71,6 +68,7 @@ public class CasaLivre extends Casa {
         return this.bombasProximas;
     }
     
+    @Override
     public void abrir() {
         if (this.bombasProximas != 0) {
             this.setText(String.valueOf(this.bombasProximas));
@@ -83,11 +81,13 @@ public class CasaLivre extends Casa {
             this.setBackground(new Color(232, 196, 156));
         }
         this.setStatusCasa(StatusCasa.ABERTA);
-
     }
     
     @Override
     public void handleRightClick() {
+        if (!this.getCampoMinado().isJogando()) {
+            return;
+        }
         this.getCampoMinado().abrirRecursivo(this);
     }
 }

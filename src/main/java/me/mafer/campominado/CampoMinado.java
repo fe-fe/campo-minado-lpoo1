@@ -14,19 +14,20 @@ import java.util.ArrayList;
  */
 
 public class CampoMinado {
+    private boolean jogando = true;
     private int linhas = 0;
     private int colunas = 0;
     private final List<Casa> casas;
-    private int quantidadeBombas;
+    private final int quantidadeBombas;
     private int flagsUsadas = 0;
     private int flagsCorretas = 0;
-    private int casasAbertas;
+    
+    private CampoMinadoListener listener;
     
     public CampoMinado(int linhas, int colunas, int quantidadeBombas) {
         this.linhas = linhas;
         this.colunas = colunas;
         this.casas = new ArrayList<>();
-        this.casasAbertas = 0;
         this.quantidadeBombas = quantidadeBombas;
     }
     
@@ -70,18 +71,28 @@ public class CampoMinado {
         }
     }
     
-    public void abrirRecursivo(CasaLivre casa) {
-        System.out.println("------> ABRINDO CASA = " + casa.getPosicaoVetor());
-        for (Casa casaAdj : casa.buscarCasasAdjacentes()) {
-            if (casaAdj instanceof CasaLivre && casaAdj.getStatusCasa() == StatusCasa.FECHADA) {
-                CasaLivre casaLivre = (CasaLivre) casaAdj;
-                casaLivre.abrir();
-                if (casaLivre.getBombasProximas() == 0) {
-                    this.abrirRecursivo(casaLivre);
+    public void abrirRecursivo(Casa casa) {
+        
+        casa.abrir();
+        
+        if (casa instanceof Bomba) {
+            listener.onLose();
+            this.jogando = false;
+        } else {
+            CasaLivre casaLivre = (CasaLivre) casa;
+            if (casaLivre.getBombasProximas() > 0) {
+                return;
+            }
+            for (Casa casaAdj : casaLivre.buscarCasasAdjacentes()) {
+                if (casaAdj instanceof CasaLivre && casaAdj.getStatusCasa() == StatusCasa.FECHADA) {
+                    CasaLivre casaLivreAdj = (CasaLivre) casaAdj;
+                    casaLivreAdj.abrir();
+                    if (casaLivreAdj.getBombasProximas() == 0) {
+                        this.abrirRecursivo(casaLivreAdj);
+                    }
                 }
             }
         }
-        System.out.println("------> FIM ABRINDO CASA = " + casa.getPosicaoVetor());
     }
     
     public List<Casa> getCasas() {
@@ -98,16 +109,19 @@ public class CampoMinado {
     
     public void adicionarFlag(int posicaoVetor) {
         flagsUsadas++;
+        listener.onFlagChange();
         if (isBomba(posicaoVetor)) {
             flagsCorretas++;
         }
         if (flagsCorretas == quantidadeBombas) {
-            System.out.println("GANHOUUUU");
+            this.jogando = false;
+            listener.onWin();
         }
     }
     
     public void removerFlag(int posicaoVetor) {
         flagsUsadas--;
+        listener.onFlagChange();
         if (isBomba(posicaoVetor)) {
             flagsCorretas--;
         }
@@ -115,5 +129,25 @@ public class CampoMinado {
     
     public static void main(String[] args) {
         MenuInicial.main();
+    }
+    
+    public int getQuantidadeBombas() {
+        return this.quantidadeBombas;
+    }
+    
+    public int getFlagsUsadas() {
+        return this.flagsUsadas;
+    }
+    
+    public int getFlagsCorretas() {
+        return this.flagsCorretas;
+    }
+    
+    public void setListener(CampoMinadoListener listener) {
+        this.listener = listener;
+    }
+    
+    public boolean isJogando() {
+        return this.jogando;
     }
 }

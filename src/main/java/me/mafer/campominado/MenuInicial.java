@@ -5,8 +5,12 @@
 package me.mafer.campominado;
 
 import java.awt.GridLayout;
-import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 /**
  *
@@ -23,35 +27,7 @@ public class MenuInicial extends javax.swing.JFrame {
         initComponents();
         String[] opcoesDificuldade = {"Fácil: 9x9, 10 minas ", "Médio: 16x16, 40 minas", "Avançado: 30x16, 99 minas"};
         ComboBoxDificuldade.setModel(new DefaultComboBoxModel<>(opcoesDificuldade));
-        BotaoComecar.addActionListener(e -> {
-            CampoMinado campoMinado;
-            switch (ComboBoxDificuldade.getSelectedIndex()) {
-                case 1 -> {
-                    campoMinado = new CampoMinado(16, 16, 40);
-                    PainelCasas.setLayout(new GridLayout(16, 16));
-                }
-                case 2 -> {
-                    campoMinado = new CampoMinado(30, 16, 99);
-                    PainelCasas.setLayout(new GridLayout(30, 16));
-                }
-                case 0 -> {
-                    campoMinado = new CampoMinado(9, 9, 10);
-                    PainelCasas.setLayout(new GridLayout(9, 9));
-                }
-                default -> {
-                    campoMinado = new CampoMinado(9, 9, 10);
-                    PainelCasas.setLayout(new GridLayout(9, 9));
-                }
-            }
-            PainelCasas.removeAll();
-            campoMinado.gerarJogo();
-            for (Casa c : campoMinado.getCasas()) {
-                PainelCasas.add(c);
-            }
-            
-            FrameCampoMinado.setVisible(true);
-            FrameCampoMinado.pack();
-        });
+        BotaoComecar.addActionListener(e -> iniciarNovoJogo());
         
         
         
@@ -70,13 +46,17 @@ public class MenuInicial extends javax.swing.JFrame {
         PainelInformacoes = new javax.swing.JPanel();
         DisplayBandeiras = new javax.swing.JTextField();
         PainelCasas = new javax.swing.JPanel();
+        DialogoFimJogo = new javax.swing.JDialog();
+        LabelFimJogo = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        MensagemFimJogo = new javax.swing.JTextPane();
+        BotaoOkFimJogo = new javax.swing.JToggleButton();
         ComboBoxDificuldade = new javax.swing.JComboBox<>();
         BotaoComecar = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
         FrameCampoMinado.setTitle("Campo Minado");
-        FrameCampoMinado.setMaximumSize(new java.awt.Dimension(1000, 1000));
         FrameCampoMinado.setMinimumSize(new java.awt.Dimension(10, 10));
 
         PainelInformacoes.setBackground(java.awt.SystemColor.control);
@@ -124,16 +104,69 @@ public class MenuInicial extends javax.swing.JFrame {
                 .addComponent(PainelCasas, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        LabelFimJogo.setText("Parabens!");
+
+        MensagemFimJogo.setEditable(false);
+        MensagemFimJogo.setText("Voce encontrou todas as bombas!");
+        MensagemFimJogo.setFocusCycleRoot(false);
+        MensagemFimJogo.setFocusable(false);
+        jScrollPane3.setViewportView(MensagemFimJogo);
+
+        BotaoOkFimJogo.setText("Ok");
+        BotaoOkFimJogo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotaoOkFimJogoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout DialogoFimJogoLayout = new javax.swing.GroupLayout(DialogoFimJogo.getContentPane());
+        DialogoFimJogo.getContentPane().setLayout(DialogoFimJogoLayout);
+        DialogoFimJogoLayout.setHorizontalGroup(
+            DialogoFimJogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DialogoFimJogoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DialogoFimJogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
+                    .addGroup(DialogoFimJogoLayout.createSequentialGroup()
+                        .addComponent(LabelFimJogo)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(BotaoOkFimJogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        DialogoFimJogoLayout.setVerticalGroup(
+            DialogoFimJogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DialogoFimJogoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(LabelFimJogo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(BotaoOkFimJogo)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Campo Minado - Maria Fernanda Zandona");
 
         ComboBoxDificuldade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboBoxDificuldade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboBoxDificuldadeActionPerformed(evt);
+            }
+        });
 
         BotaoComecar.setText("Jogar");
 
-        jTextPane1.setEditable(false);
-        jTextPane1.setText("Trabalho de campo minado feito por Maria Fernanda Zandona Casagrande Clique esquerdo = colocar bandeira (F) Clique direito = abrir casa ");
-        jScrollPane2.setViewportView(jTextPane1);
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.setText("Trabalho de campo minado\nfeito por Maria Fernanda Zandona Casagrande \nClique esquerdo = colocar bandeira (F) \nClique direito = abrir casa ");
+        jTextArea1.setAutoscrolls(false);
+        jTextArea1.setDisabledTextColor(javax.swing.UIManager.getDefaults().getColor("TextField.light"));
+        jTextArea1.setEnabled(false);
+        jTextArea1.setFocusable(false);
+        jTextArea1.setRequestFocusEnabled(false);
+        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,7 +175,7 @@ public class MenuInicial extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(ComboBoxDificuldade, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -154,7 +187,7 @@ public class MenuInicial extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ComboBoxDificuldade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,8 +199,14 @@ public class MenuInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void DisplayBandeirasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayBandeirasActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_DisplayBandeirasActionPerformed
+
+    private void ComboBoxDificuldadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxDificuldadeActionPerformed
+    }//GEN-LAST:event_ComboBoxDificuldadeActionPerformed
+
+    private void BotaoOkFimJogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotaoOkFimJogoActionPerformed
+        fecharDialogoFimJogo(FrameCampoMinado);
+    }//GEN-LAST:event_BotaoOkFimJogoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -193,15 +232,79 @@ public class MenuInicial extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new MenuInicial().setVisible(true));
     }
+    
+    public JDialog getDialogoFimJogo() {
+        return this.DialogoFimJogo;
+    }
+    
+    public JLabel getLabelFimJogo() {
+        return this.LabelFimJogo;
+    } 
+    
+    public JTextPane getMensagemFimJogo() {
+        return this.MensagemFimJogo;
+    } 
+    
+    public JTextField getDisplayBandeiras() {
+        return this.DisplayBandeiras;
+    }
+
+    public void iniciarNovoJogo() {
+        this.setVisible(false);
+        CampoMinado campoMinado;
+        PainelCasas.removeAll();
+        switch (this.ComboBoxDificuldade.getSelectedIndex()) {
+            case 1 -> {
+                campoMinado = new CampoMinado(16, 16, 40);
+                PainelCasas.setLayout(new GridLayout(16, 16));
+            }
+            case 2 -> {
+                campoMinado = new CampoMinado(30, 16, 99);
+                PainelCasas.setLayout(new GridLayout(30, 16));
+            }
+            case 0 -> {
+                campoMinado = new CampoMinado(9, 9, 10);
+                PainelCasas.setLayout(new GridLayout(9, 9));
+            }
+            default -> {
+                campoMinado = new CampoMinado(9, 9, 10);
+                PainelCasas.setLayout(new GridLayout(9, 9));
+            }
+        }
+        
+        CampoMinadoController controller = new CampoMinadoController(campoMinado, this);
+        campoMinado.setListener(controller);
+        campoMinado.gerarJogo();
+        for (Casa c : campoMinado.getCasas()) {
+            PainelCasas.add(c);
+        }
+        
+        controller.onFlagChange();
+        FrameCampoMinado.setVisible(true);
+        FrameCampoMinado.pack();
+        
+        
+    }
+    
+    public void fecharDialogoFimJogo(JFrame frameCampoMinado) {
+        frameCampoMinado.setVisible(false);
+        DialogoFimJogo.setVisible(false);
+        this.setVisible(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BotaoComecar;
+    private javax.swing.JToggleButton BotaoOkFimJogo;
     private javax.swing.JComboBox<String> ComboBoxDificuldade;
+    private javax.swing.JDialog DialogoFimJogo;
     private javax.swing.JTextField DisplayBandeiras;
     private javax.swing.JFrame FrameCampoMinado;
+    private javax.swing.JLabel LabelFimJogo;
+    public javax.swing.JTextPane MensagemFimJogo;
     private javax.swing.JPanel PainelCasas;
     private javax.swing.JPanel PainelInformacoes;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }

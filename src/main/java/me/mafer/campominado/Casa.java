@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JButton;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 /**
@@ -17,6 +18,7 @@ import javax.swing.SwingUtilities;
  * @author fefe
  */
 public abstract class Casa extends JButton{
+    private static JTextField displayBandeiras;
     private final CampoMinado campoMinado;
     private final int posicaoVetor;
     private StatusCasa status = StatusCasa.FECHADA;
@@ -50,6 +52,10 @@ public abstract class Casa extends JButton{
             }
         }
     };
+    
+    public static void setDisplayBandeiras(JTextField display) {
+        displayBandeiras = display;
+    } 
             
     public void setStatusCasa(StatusCasa status) {
         this.status = status;
@@ -59,10 +65,15 @@ public abstract class Casa extends JButton{
         return this.status;
     }
     
+    // nao implementada pois nao ha reutilizacao de codigo
     public void handleRightClick() {}
     
     public void handleLeftClick() {
-        if (this.status == StatusCasa.FECHADA) {
+        if (!campoMinado.isJogando()) {
+            return;
+        }
+        
+        if ((this.status == StatusCasa.FECHADA) && (this.campoMinado.getFlagsUsadas() < this.campoMinado.getQuantidadeBombas())) {
             this.setText("F");
             this.status = StatusCasa.BANDEIRA;
             this.campoMinado.adicionarFlag(this.posicaoVetor);
@@ -79,6 +90,10 @@ public abstract class Casa extends JButton{
     
     public int getPosicaoVetor() {
         return this.posicaoVetor;
+    }
+    
+    public void abrir(){
+        
     }
 
 }
