@@ -1,5 +1,5 @@
 # campo-minado-lpoo1
-Campo Minado com interface graftica feita com Java + Swing
+Campo Minado com interface grafica feita com Java + Swing
 
 Dificuldades facil, medio e avancado
 
