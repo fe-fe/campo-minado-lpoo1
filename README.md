@@ -8,7 +8,7 @@ Menu Inicial
 
 Jogo vencido
 
-![Campo minado com todas as bombas sinalizadas](README/venceu.png) 
+![Campo minado com todas as bombas sinalizadas](README/ganhou.png) 
 
 Jogo Perdido
 
